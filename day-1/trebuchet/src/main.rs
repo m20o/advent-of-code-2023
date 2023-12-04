@@ -17,7 +17,7 @@ fn main() {
                 result += value;
             }
         }
-        println!("The sum of all calibration value is {}", result);
+        println!("The sum of all calibration values is {}", result);
     }
 }
 
@@ -27,23 +27,25 @@ fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<fs::File>>>
     Ok(io::BufReader::new(file).lines())
 }
 
-
-fn extract_calibration_value(text: &str) -> u32 {
-    let digits: Vec<_> = text.chars()
+fn extract_calibration_value(line: &str) -> u32 {
+    let digits: Vec<_> = line
+        .replace("one", "one1one")
+        .replace("two", "two2two")
+        .replace("three", "three3three")
+        .replace("four", "four4four")
+        .replace("five", "five5five")
+        .replace("six", "six6six")
+        .replace("seven", "seven7seven")
+        .replace("eight", "eight8eight")
+        .replace("nine", "nine9nine")
+        .chars()
         .filter(|c| c.is_numeric())
         .map(|d| d.to_digit(10).unwrap())
         .collect();
-
-    if digits.len() > 1 {
-        let first = digits.first().unwrap();
-        let last = digits.last().unwrap();
-        first * 10 + last
-    } else {
-        let digit = digits.first().unwrap();
-        digit * 10 + digit
-    }
+    let first = digits.first().unwrap();
+    let last = digits.last().unwrap();
+    first * 10 + last
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -67,5 +69,57 @@ mod tests {
     #[test]
     fn one_digit() {
         assert_eq!(extract_calibration_value("treb7uchet"), 77);
+    }
+
+    #[test]
+    fn one_digit_and_one_letter() {
+        assert_eq!(extract_calibration_value("two1nine"), 29);
+    }
+
+    #[test]
+    fn three_letters() {
+        assert_eq!(extract_calibration_value("eightwothree"), 83);
+    }
+
+    #[test]
+    fn letters_and_numbers_in_the_middle() {
+        assert_eq!(extract_calibration_value("abcone2threexyz"), 13);
+    }
+
+    #[test]
+    fn letters_and_numbers_in_the_middle_2() {
+        assert_eq!(extract_calibration_value("xtwone3four"), 24);
+    }
+
+    #[test]
+    fn letters_and_numbers_in_the_middle_3() {
+        assert_eq!(extract_calibration_value("4nineeightseven2"), 42);
+    }
+
+    #[test]
+    fn letters_and_numbers_in_the_middle_4() {
+        assert_eq!(extract_calibration_value("zoneight234"), 14);
+    }
+
+    #[test]
+    fn letters_and_numbers_in_the_middle_5() {
+        assert_eq!(extract_calibration_value("7pqrstsixteen"), 76);
+    }
+
+    #[test]
+    fn sum_all_calibration_values() {
+        let values = [
+            "two1nine     ",
+            "eightwothree     ",
+            "abcone2threexyz  ",
+            "xtwone3four      ",
+            "4nineeightseven2 ",
+            "zoneight234      ",
+            "7pqrstsixteen    "
+        ];
+
+        let sum: u32 = values.iter().map(|v| extract_calibration_value(v.trim()))
+            .sum();
+        assert_eq!(sum, 281);
     }
 }
