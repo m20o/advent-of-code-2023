@@ -30,6 +30,19 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         println!("The sum of all games is {}", result);
     }
+
+    if let Ok(lines) = read_lines(filename) {
+        let mut result: u32 = 0;
+        for line in lines {
+            if let Ok(value) = line.map( |txt| {
+                Game::parse(txt).unwrap()
+            }) {
+                result += value.minimum().power();
+            }
+        }
+        println!("The sum of all cubes is {}", result);
+    }
+
     Ok(())
 }
 
@@ -64,6 +77,26 @@ impl Game {
         return self.picks.iter().all(|p| {
             p.red <= RED_CUBES && p.green <= GREEN_CUBES && p.blue <= BLUE_CUBES
         });
+    }
+
+    fn minimum(&self) -> Pick {
+        let mut out = Pick {
+            red: 0,
+            blue: 0, 
+            green: 0
+        };
+        self.picks.iter().for_each(|p| {
+          if p.red > out.red {
+            out.red = p.red
+          }  
+          if p.green > out.green {
+            out.green = p.green
+          }  
+          if p.blue > out.blue {
+            out.blue = p.blue
+          }  
+        });
+        out    
     }
 }
 
@@ -103,6 +136,13 @@ struct Pick {
     red: usize,
     green: usize,
     blue: usize
+}
+
+impl Pick {
+    
+    fn power(&self) ->u32 {
+        return self.red as u32 * self.green as u32 * self.blue as u32;
+    }
 }
 
 #[cfg(test)]
