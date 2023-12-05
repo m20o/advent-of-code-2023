@@ -3,14 +3,19 @@
 version = 3
 
 [[package]]
-name = "log"
-version = "0.4.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
+name = "common"
+version = "0.1.0"
+
+[[package]]
+name = "cube-conundrum"
+version = "0.1.0"
+dependencies = [
+ "common",
+]
 
 [[package]]
 name = "trebuchet"
 version = "0.1.0"
 dependencies = [
- "log",
+ "common",
 ]

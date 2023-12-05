@@ -1,6 +1,7 @@
-use std::{env, fs};
-use std::io::{self, BufRead};
+use std::env;
 use std::process::exit;
+
+use common::read_lines;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -11,7 +12,7 @@ fn main() {
     let filename = &args[1];
 
     if let Ok(lines) = read_lines(filename) {
-        let mut result = 0u32;
+        let mut result: u32 = 0u32;
         for line in lines {
             if let Ok(value) = line.map(|txt| extract_calibration_value(txt.as_str())) {
                 result += value;
@@ -19,12 +20,6 @@ fn main() {
         }
         println!("The sum of all calibration values is {}", result);
     }
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<fs::File>>>
-    where P: AsRef<std::path::Path>, {
-    let file = fs::File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
 
 fn extract_calibration_value(line: &str) -> u32 {

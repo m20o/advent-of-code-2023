@@ -2,5 +2,7 @@
 resolver = "2"
 
 members = [
-    "day-1/trebuchet"
+    "common",
+    "day-1/trebuchet",
+    "day-2/cube-conundrum"
 ]
